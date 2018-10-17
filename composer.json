@@ -1,6 +1,6 @@
 {
-  "name": "endorphin-studio/browser-detector-data",
-  "description": "Data for endorphin-studio/browser-detector",
+  "name": "endorphin-studio/browser-detector-tools",
+  "description": "Tools for endorphin-studio/browser-detector",
   "minimum-stability": "stable",
   "type": "library",
   "license": "MIT",
