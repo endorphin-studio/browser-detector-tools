@@ -34,25 +34,39 @@ class Tools
      * @param string $phrase
      * @param string $ua
      * @return string
+     * @throws \RuntimeException
      */
     public static function getVersion(string $phrase, string $ua): string
     {
-        $version = static::getVersionPattern($phrase);
-        $uaString = str_replace(' NT', '', $ua);
-        if (preg_match($version, $uaString)) {
-            preg_match($version, $uaString, $v);
-            $version = $v[0];
+        $versionPattern = static::getVersionPattern($phrase);
+        $uaString       = str_replace(' NT', '', $ua);
+        $matches        = null;
+
+        $matched = preg_match($versionPattern, $uaString, $matches);
+
+        if (false === $matched) {
+            throw new \RuntimeException(
+                sprintf(
+                    'Could not detect version because an error occured while parsing UA "%s" with pattern %s',
+                    $ua,
+                    $versionPattern
+                )
+            );
+        }
+
+        if (0 < $matched) {
+            $version = $matches[0];
             $version = preg_replace('/' . $phrase . '/', '', $version);
-            $version = str_replace(';', '', $version);
-            $version = str_replace(' ', '', $version);
-            $version = str_replace('/', '', $version);
+            $version = str_replace([';', ' ', '/'], '', $version);
             $version = str_replace('_', '.', $version);
 
-            if(preg_match('/ Windows /', $uaString)) {
+            if (preg_match('/ Windows /', $uaString)) {
                 $version = static::getWindowsVersion($version);
             }
+
             return $version;
         }
+
         return "not available";
     }
 
@@ -97,6 +111,7 @@ class Tools
     public static function runSetter(&$object, string $key, $value)
     {
         $methodName = static::getMethodName($key);
+
         if (method_exists($object, $methodName)) {
             $object->$methodName($value);
         }
@@ -111,9 +126,11 @@ class Tools
     public static function runGetter(&$object, string $key)
     {
         $methodName = static::getMethodName($key, 'get');
+
         if (method_exists($object, $methodName)) {
             return $object->$methodName();
         }
+
         return null;
     }
 
@@ -130,6 +147,7 @@ class Tools
         } else {
             $files[] = $path;
         }
+
         return \array_unique($files);
     }
 }
