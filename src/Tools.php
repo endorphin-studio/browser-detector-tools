@@ -1,9 +1,9 @@
 <?php
 /**
- * @author Serhii Nekhaienko <sergey.nekhaenko@gmail.com>
+ * @author Serhii Nekhaienko <serhii.nekhaienko@gmail.com>
  * @license GPL
- * @copyright Serhii Nekhaienko &copy 2018
- * @version 4.0.0
+ * @copyright Serhii Nekhaienko &copy 2020
+ * @version 1.1
  * @project endorphin-studio/browser-detector-tools
  */
 
@@ -63,7 +63,7 @@ class Tools
      */
     public static function getVersionPattern(string $phrase): string
     {
-        return sprintf('/%s(\/| )[\w-._]{1,15}/', $phrase);
+        return str_replace('-', '\-', sprintf('/%s(\/| )[\w-._]{1,15}/', $phrase));
     }
 
     /**
